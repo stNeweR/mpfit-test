@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www
+      - ./_docker/nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - app
+
+  app:
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    build:
+      context: .
+      dockerfile: _docker/app/Dockerfile
+    container_name: app
+    volumes:
+      - ./:/var/www
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    ports:
+      - "3306:3306" # Порт MySQL на хосте и в контейнере
+    volumes:
+      - ./mysql-data:/var/lib/mysql # Сохранение данных MySQL на хосте
+    environment:
+      MYSQL_ROOT_PASSWORD: password # Пароль для root-пользователя
+      MYSQL_DATABASE: mpfit # Имя базы данных (необязательно)
+      MYSQL_USER: laravel # Пользователь базы данных (необязательно)
+      MYSQL_PASSWORD: secret # Пароль пользователя (необязательно)
+    restart: always # Автоматический перезапуск контейнера при сбоях
