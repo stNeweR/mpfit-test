@@ -52,8 +52,10 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
+        $product->orders()->delete();
+
         $product->delete();
 
-        return redirect()->route('index');
+        return redirect()->route('products.index')->with('success', 'Товар удален');
     }
 }

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->decimal('price');
-            $table->foreignIdFor(Category::class);
+            $table->foreignIdFor(Category::class)->constrained()->onDelete('cascade');
 
             $table->timestamps();
         });
